@@ -24,19 +24,14 @@ int deal_char(game_t *g) {
             && c != 's'
             && c != 'd');
 
-        int finish;
         switch (c) {
-                case 'q': finish = step(g, LEFT);
-                          break;
-                case 'z': finish = step(g, UP);
-                          break;
-                case 'd': finish = step(g, RIGHT);
-                          break;
-                case 's': finish = step(g, DOWN);
-                          break;
+                case 'q': return step(g, LEFT);
+                case 'z': return step(g, UP);
+                case 'd': return step(g, RIGHT);
+                case 's': return step(g, DOWN);
         }
 
-        return finish;
+        return CONTINUE_GAME;
 }
 
 void interface (void) {
