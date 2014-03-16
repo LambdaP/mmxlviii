@@ -1,14 +1,14 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#define WINNING_VALUE 2048
+#define WINNING_VALUE 11
 
 #define LOSE_GAME (-1)
 #define CONTINUE_GAME 0
 #define WIN_GAME 1
 
 typedef struct game {
-        int t [16];
+        char t [16];
         unsigned int score;
 } game_t;
 

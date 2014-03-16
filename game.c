@@ -14,7 +14,7 @@ void init (void)
  * Given a 4-numbers row, move them all towards the first one,
  * leaving zeroes in the places newly empty.
  */
-void push (int *p1, int *p2, int *p3, int *p4)
+void push (char *p1, char *p2, char *p3, char *p4)
 {
         if (*p3 == 0) {
                 *p3 = *p4;
@@ -33,37 +33,37 @@ void push (int *p1, int *p2, int *p3, int *p4)
         }
 }
 
-static inline void replace_and_score (int *p, int val, unsigned int *score)
+static inline void increment_and_score (char *p, unsigned int *score)
 {
-        *p = val;
-        *score += val;
+        ++(*p);
+        *score += (1 << (*p));
 }
 
 /*
  * Given a 4-numbers row, fusion the neighbouring cases bearing the
  * same number, leaving zeroes in the places newly empty.
  */
-void fusion (unsigned int *score, int *p1, int *p2, int *p3, int *p4)
+void fusion (unsigned int *score, char *p1, char *p2, char *p3, char *p4)
 {
-        if (*p1 == *p2) {
-                replace_and_score(p1, 2 * (*p1), score);
+        if (*p1 && *p1 == *p2) {
+                increment_and_score(p1, score);
 
-                if (*p3 == *p4) {
-                        *p2 = *p3 + *p4;
-                        *score += *p2;
+                if (*p3 && *p3 == *p4) {
+                        *p2 = *p3;
                         *p3 = 0;
+                        increment_and_score(p2, score);
                 } else {
                         *p2 = *p3;
                         *p3 = *p4;
                 }
 
                 *p4 = 0;
-        } else if (*p2 == *p3) {
-                replace_and_score(p2, 2 * (*p2), score);
+        } else if (*p2 && *p2 == *p3) {
+                increment_and_score(p2, score);
                 *p3 = *p4;
                 *p4 = 0;
-        } else if (*p3 == *p4) {
-                replace_and_score(p3, 2 * (*p3), score);
+        } else if (*p3 && *p3 == *p4) {
+                increment_and_score(p3, score);
                 *p4 = 0;
         }
 }
@@ -74,7 +74,7 @@ void fusion (unsigned int *score, int *p1, int *p2, int *p3, int *p4)
  */
 void move4 (game_t *g, int n1, int n2, int n3, int n4)
 {
-        int *p1, *p2, *p3, *p4;
+        char *p1, *p2, *p3, *p4;
         p1 = g->t + n1;
         p2 = g->t + n2;
         p3 = g->t + n3;
@@ -133,7 +133,7 @@ int simulate(game_t *g, dir_t d)
 /*
  * Count the empty tiles on the board.
  */
-int nempty (const int t [16])
+int nempty (const char t [16])
 {
         int ret = 0;
         for (int i = 0; i < 16; i++) {
@@ -156,10 +156,10 @@ int randab (int a, int b)
 /*
  * Make a new tile appear on the board.
  */
-void pop_new (int t [16])
+void pop_new (char t [16])
 {
         int tmp = randab(0,2);
-        int new = (tmp == 0) ? 4 : 2;
+        int new = (tmp == 0) ? 2 : 1;
         int n = nempty(t);
         int new_case = randab(1, n);
 
@@ -179,7 +179,7 @@ void pop_new (int t [16])
  *
  * Return 1 if the board has a valid move, 0 otherwise.
  */
-int exist_move (const int t [16])
+int exist_move (const char t [16])
 {
         // A non-full board has a valid move.
         if (nempty(t)) {
@@ -203,7 +203,7 @@ int exist_move (const int t [16])
  *        WIN_GAME if the game was won,
  *        LOSE_GAME if there are no more possible moves.
  */
-int finish (int t [16])
+int finish (char t [16])
 {
         for (int i = 0; i < 16; i++) {
                 if (t[i] == WINNING_VALUE) {
