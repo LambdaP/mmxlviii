@@ -159,7 +159,7 @@ int randab (int a, int b)
 void pop_new (int t [16])
 {
         int tmp = randab(0,2);
-        int new = (tmp == 0) ? 2 : 4;
+        int new = (tmp == 0) ? 4 : 2;
         int n = nempty(t);
         int new_case = randab(1, n);
 
